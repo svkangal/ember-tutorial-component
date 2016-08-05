@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-tutorial-component';
 
-const { computed, Handlebars: { SafeString } } = Ember;
+const { computed, run, Handlebars: { SafeString } } = Ember;
 export default Ember.Component.extend({
   layout: layout,
 
@@ -23,21 +23,16 @@ export default Ember.Component.extend({
     }
   }),
 
+  tooltipPointerSide: 'left',
+
+  isLeftPointer: computed.equal('tooltipPointerSide', 'left'),
   /**
    * Tooltip coord X
    * @property xCoord
    * @type {Number}
    * @default 0
    */
-  xCoord: computed('currentConfig', function() {
-    if(this.get('currentConfig')) {
-      let ele = Ember.$('#'+this.get('currentConfig').eleId);
-      if (ele && ele[0]) {
-        let rect = ele[0].getBoundingClientRect();
-        return rect.right;
-      }
-    }
-  }),
+  xCoord: 0,
 
   /**
    * Tooltip coord Y
@@ -45,15 +40,56 @@ export default Ember.Component.extend({
    * @type {Number}
    * @default 0
    */
-  yCoord: computed('currentConfig', function() {
+  yCoord: 0,
+
+  computeYCord() {
     if(this.get('currentConfig')) {
       let ele = Ember.$('#'+this.get('currentConfig').eleId);
       if (ele && ele[0]) {
-        let rect = ele[0].getBoundingClientRect();
-        return rect.top;
+        let { left, top, right, bottom, width, height } = ele[0].getBoundingClientRect();
+        let { clientWidth: viewPortWidth, clientHeight: viewPortHeight } = document.documentElement;
+        let minTooltipWidth = 200;
+        let maxTooltipWidth = 350;
+        let paddingAndPointerOffset = 32;
+        let { width: currentTooltipWidth } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
+        if(left < viewPortWidth/2  && right < viewPortWidth/2) { // tooltip on the right side
+          this.set('tooltipPointerSide', 'left');
+          this.set('xCoord', right);
+        } else if(left > viewPortWidth/2  && right < viewPortWidth) {
+          this.set('tooltipPointerSide', 'right');
+          this.set('xCoord', left - currentTooltipWidth - paddingAndPointerOffset);
+        } else if(left < viewPortWidth/2 && right > viewPortWidth/2) {
+          this.set('tooltipPointerSide', 'left');
+          if(right + minTooltipWidth > viewPortWidth){
+            this.set('xCoord', right - 40 - minTooltipWidth);
+          } else {
+            this.set('xCoord', right);
+          } 
+        } else { // tooltip on the left side
+          
+        }       
+      }
+    }
+  },
+
+
+  computeXCord() {
+    if(this.get('currentConfig')) {
+      let ele = Ember.$('#'+this.get('currentConfig').eleId);
+      if (ele && ele[0]) {
+        let { left, top, right, bottom, width, height } = ele[0].getBoundingClientRect();
+        let { clientWidth: viewPortWidth, clientHeight: viewPortHeight } = document.documentElement;
+        let { height: currentTooltipHeight } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
+        let paddingOffset = 0;
+        currentTooltipHeight = currentTooltipHeight + paddingOffset;
+        if (height < currentTooltipHeight) {
+          this.set('yCoord', top + height/2 - currentTooltipHeight/2 +  window.pageYOffset);
+        } else {
+          this.set('yCoord', top - currentTooltipHeight/2 +  window.pageYOffset);
+        }
       } 
     }
-  }),
+  },
 
   /**
    * Tooltip CSS inline style
@@ -62,7 +98,7 @@ export default Ember.Component.extend({
    * @method tooltipStyle
    * @return `left: Xpx; top: Ypx;`
    */
-  tooltipStyle: computed('xCoord', 'yCoord', function() {
+  tooltipStyle:  computed('xCoord', 'yCoord', function() {
     return new SafeString(`left: ${this.get('xCoord') + 15}px; top: ${this.get('yCoord')}px; position: absolute;`);
   }),
 
@@ -73,17 +109,22 @@ export default Ember.Component.extend({
         eleId: 'test1',
         message: 'This is a demo message. May be step 1, please press next.'
       },{
-        eleId: 'test12',
+        eleId: 'test2',
         message: 'Message 2'
+      },{
+        eleId: 'test3',
+        message: 'This press next mo message. May be step 1, pleas'
       }]
     });
   },
 
   didInsertElement() {
-    let that = this;
-    Ember.run.scheduleOnce('afterRender', function() {
-      that.set('currentConfig', that.get('config').data[0]);
-      that.set('currentConfigIndex', 0);
+    //let that = this;
+    run.scheduleOnce('afterRender', this, function() {
+      this.set('currentConfig', this.get('config').data[0]);
+      this.set('currentConfigIndex', 0);
+      this.computeXCord();
+      this.computeYCord();
     });
   },
 
@@ -92,6 +133,10 @@ export default Ember.Component.extend({
       let nextConfigIndex = this.get('currentConfigIndex') + 1;
       this.set('currentConfig', this.get('config').data[nextConfigIndex]);
       this.set('currentConfigIndex', nextConfigIndex);
+      run.scheduleOnce('afterRender', this, function() {
+        this.computeXCord();
+        this.computeYCord();
+      });
       window.scrollTo(this.get('xCoord'), this.get('yCoord'));
     },
 

@@ -19,4 +19,63 @@
     width: 50px;
     height: 21px;
   }
+  &.left {
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-color: transparent;
+      border-left: 0;
+    }
+
+    /* Stroke */
+    &:before {
+      bottom: 35%;
+      left: -12px;
+
+      /* If 1px darken stroke slightly */
+      border-right-color: white;
+      border-width: 12px;
+    }
+
+    /* Fill */
+    &:after {
+      bottom: 35%;
+      left: -11px;
+      border-right-color: black;
+      border-width: 12px;
+    }
+  }
+  &.right {
+     /* Required for Triangle */
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-color: transparent;
+      border-right: 0;
+    }
+
+    /* Stroke */
+    &:before {
+      right: -12px;
+      bottom: 35%;
+
+      /* If 1px darken stroke slightly */
+      border-left-color: white;
+      border-width: 12px;
+    }
+
+    /* Fill */
+    &:after {
+      right: -11px;
+      bottom: 35%;
+      border-left-color: black;
+      border-width: 12px;
+    }
+  }
 }
