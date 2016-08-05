@@ -52,13 +52,16 @@ export default Ember.Component.extend({
         let maxTooltipWidth = 350;
         let paddingAndPointerOffset = 32;
         let { width: currentTooltipWidth } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
-        if(left < viewPortWidth/2  && right < viewPortWidth/2) { // tooltip on the right side
+        if(left < viewPortWidth/2  && right < viewPortWidth/2) { // content in the left half
           this.set('tooltipPointerSide', 'left');
           this.set('xCoord', right);
-        } else if(left > viewPortWidth/2  && right < viewPortWidth) {
+        } else if(left > viewPortWidth/2  && right < viewPortWidth) { // content in the right half
           this.set('tooltipPointerSide', 'right');
           this.set('xCoord', left - currentTooltipWidth - paddingAndPointerOffset);
-        } else if(left < viewPortWidth/2 && right > viewPortWidth/2) {
+        } else if(left > viewPortWidth/2  && right > viewPortWidth) { // content in the right half
+          this.set('tooltipPointerSide', 'right');
+          this.set('xCoord', left - currentTooltipWidth - paddingAndPointerOffset);
+        } else if(left < viewPortWidth/2 && right > viewPortWidth/2) { // content overlapping both hakd
           this.set('tooltipPointerSide', 'left');
           if(right + minTooltipWidth > viewPortWidth){
             this.set('xCoord', right - 40 - minTooltipWidth);
@@ -66,7 +69,7 @@ export default Ember.Component.extend({
             this.set('xCoord', right);
           } 
         } else { // tooltip on the left side
-          
+          Ember.Logger.error('This condition should not reach');
         }       
       }
     }
