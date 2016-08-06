@@ -16,8 +16,8 @@
 
 ## Demo
  - Live Demo Link
-   [http://please.put.a.link.com](http://please.put.a.link.com)
- 
+   [Demo](https://svkangal.github.io/ember-tutorial-component/)
+
  - Demo Gif
    ![ezgif com-video-to-gif 1](https://cloud.githubusercontent.com/assets/2807160/17454524/fe61d674-5b4d-11e6-8f3f-d5dfb9a2bb57.gif)
 
@@ -49,7 +49,16 @@
 
 ```javascript
 { 
-  data: []
+  data: [{
+    eleId: 'test1',
+    message: 'First help message goes here.'
+  }, {
+    eleId: 'test2',
+    message: 'This is the next step.'
+  }, {
+    eleId: 'test3',
+    message: 'Final step, hit done to hide.'
+  }]
 }
 ```
 

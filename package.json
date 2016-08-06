@@ -9,7 +9,9 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:each"
+    "test": "ember try:each",
+    "checkStyle": "jscs . --config=./.jscsrc --verbose",
+    "fixStyle": "jscs . --config=./.jscsrc --fix --verbose"
   },
   "repository": "https://github.com/svkangal/ember-tutorial-component",
   "engines": {
@@ -37,8 +39,8 @@
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
-    "ember-welcome-page": "^1.0.1",
-    "loader.js": "^4.0.1"
+    "loader.js": "^4.0.1",
+    "jscs": "^2.3.0"
   },
   "keywords": [
     "ember-addon",
@@ -54,6 +56,7 @@
     "ember-cli-less": "1.5.1"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "configPath": "tests/dummy/config",
+    "demoURL": "https://svkangal.github.io/ember-tutorial-component/"
   }
 }
