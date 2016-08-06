@@ -42,14 +42,13 @@ export default Ember.Component.extend({
    */
   yCoord: 0,
 
-  computeYCord() {
+  computeXCord() {
     if(this.get('currentConfig')) {
       let ele = Ember.$('#'+this.get('currentConfig').eleId);
       if (ele && ele[0]) {
-        let { left, top, right, bottom, width, height } = ele[0].getBoundingClientRect();
-        let { clientWidth: viewPortWidth, clientHeight: viewPortHeight } = document.documentElement;
+        let { left, right } = ele[0].getBoundingClientRect();
+        let { clientWidth: viewPortWidth } = document.documentElement;
         let minTooltipWidth = 200;
-        let maxTooltipWidth = 350;
         let paddingAndPointerOffset = 32;
         let { width: currentTooltipWidth } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
         if(left < viewPortWidth/2  && right < viewPortWidth/2) { // content in the left half
@@ -76,12 +75,11 @@ export default Ember.Component.extend({
   },
 
 
-  computeXCord() {
+  computeYCord() {
     if(this.get('currentConfig')) {
       let ele = Ember.$('#'+this.get('currentConfig').eleId);
       if (ele && ele[0]) {
-        let { left, top, right, bottom, width, height } = ele[0].getBoundingClientRect();
-        let { clientWidth: viewPortWidth, clientHeight: viewPortHeight } = document.documentElement;
+        let { top, height } = ele[0].getBoundingClientRect();
         let { height: currentTooltipHeight } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
         let paddingOffset = 0;
         currentTooltipHeight = currentTooltipHeight + paddingOffset;

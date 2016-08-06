@@ -8,5 +8,8 @@ module.exports = {
     if (config.environment !== 'test' && type === 'body-footer') {
       return '<div id="ember-tutorial-component-wormhole"></div>';
     }
+  },
+  isDevelopingAddon: function() {
+    return true;
   }
 };
