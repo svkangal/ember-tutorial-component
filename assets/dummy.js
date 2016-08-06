@@ -588,7 +588,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("dummy/app")["default"].create({"name":"ember-tutorial-component","version":"0.0.3+27357fb2"});
+  require("dummy/app")["default"].create({"name":"ember-tutorial-component","version":"0.0.3+fa5ba75c"});
 }
 
 /* jshint ignore:end */
