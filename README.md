@@ -1,6 +1,21 @@
-# Ember-tutorial-component
+# Treevis - D3 based tree chart. [![Build Status](http://api.sandbox.screwdriver.corp.yahoo.com:4080/badge/95889/component/icon)](http://api.sandbox.screwdriver.corp.yahoo.com:4080/badge/95889/component/target)
 
-This README outlines the details of collaborating on this Ember addon.
+
+## Index
+
+ - [Demo](#demo)
+ - [Installation](#installation)
+ - [Running](#running)
+ - [Running Tests](#running-tests)
+ - [Usage](#usage)
+ - [API](#api)
+ - [npm Url](#npm-url)
+ - [Ongoing Features](#ongoing-features)
+ - [Future Enhancements](#future-enchancements)
+
+## Demo
+ - Live Demo Link
+   [http://please.put.a.link.com](http://please.put.a.link.com)
 
 ## Installation
 
@@ -10,17 +25,37 @@ This README outlines the details of collaborating on this Ember addon.
 
 ## Running
 
-* `ember serve`
-* Visit your app at http://localhost:4200.
+* `ember server`
+* Visit your app at [http://localhost:4200/tutorial](http://localhost:4200/tutorial)
 
 ## Running Tests
 
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
 * `ember test`
 * `ember test --server`
 
-## Building
+### Usage
+```javascript
+  {{ember-tutorial-component
+    config=config
+  }}
+```
+## API
 
-* `ember build`
+* `config`: Configuration for the component
 
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+```javascript
+{ 
+  data: []
+}
+```
+
+### npm Url
+[https://www.npmjs.com/package/ember-tutorial-component](https://www.npmjs.com/package/ember-tutorial-component)
+
+### Ongoing Features
+List all the current features in development.
+
+### Future Enhancements
+List all the future enhancements for this addon.
+      
+
