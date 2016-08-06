@@ -16,7 +16,7 @@
 
 ## Demo
  - Live Demo Link
-   [http://please.put.a.link.com](http://please.put.a.link.com)
+   [Demo](https://svkangal.github.io/ember-tutorial-component/)
 
 ## Installation
 
