@@ -1,6 +1,5 @@
 # Ember Tutorial Component 
-
-[![Build Status](https://travis-ci.org/svkangal/ember-tutorial-component.svg?branch=documentation)](https://travis-ci.org/svkangal/ember-tutorial-component) [![Ember Observer Score](http://emberobserver.com/badges/ember-tutorial-component.svg)](http://emberobserver.com/addons/ember-tutorial-component)
+[![Build Status](https://travis-ci.org/svkangal/ember-tutorial-component.svg?branch=master)](https://travis-ci.org/svkangal/ember-tutorial-component) [![Ember Observer Score](http://emberobserver.com/badges/ember-tutorial-component.svg)](http://emberobserver.com/addons/ember-tutorial-component)
 
 ## Index
 
