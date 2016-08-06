@@ -1,4 +1,4 @@
-# Treevis - D3 based tree chart. [![Build Status](http://api.sandbox.screwdriver.corp.yahoo.com:4080/badge/95889/component/icon)](http://api.sandbox.screwdriver.corp.yahoo.com:4080/badge/95889/component/target)
+# Ember Tutorial Component [![Build Status](http://api.sandbox.screwdriver.corp.yahoo.com:4080/badge/95889/component/icon)](http://api.sandbox.screwdriver.corp.yahoo.com:4080/badge/95889/component/target)
 
 [![Build Status](https://travis-ci.org/svkangal/ember-tutorial-component.svg?branch=documentation)](https://travis-ci.org/svkangal/ember-tutorial-component)
 
