@@ -1,0 +1,79 @@
+.tutorial-component {
+  background-color: black;
+  color: #fff;
+  padding: 5px 0;
+  border-radius: 6px;
+  text-align: left;
+  max-width: 300px;
+  min-width: 200px;
+  min-height: 50px;
+  padding: 10px;
+  z-index: 99999;
+}
+.tutorial-component > div {
+  margin-right: 50px;
+}
+.tutorial-component > button {
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  cursor: pointer;
+  width: 50px;
+  height: 21px;
+}
+.tutorial-component.left {
+  /* Stroke */
+  /* Fill */
+}
+.tutorial-component.left:before,
+.tutorial-component.left:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  border-left: 0;
+}
+.tutorial-component.left:before {
+  bottom: 35%;
+  left: -12px;
+  /* If 1px darken stroke slightly */
+  border-right-color: white;
+  border-width: 12px;
+}
+.tutorial-component.left:after {
+  bottom: 35%;
+  left: -11px;
+  border-right-color: black;
+  border-width: 12px;
+}
+.tutorial-component.right {
+  /* Required for Triangle */
+  /* Stroke */
+  /* Fill */
+}
+.tutorial-component.right:before,
+.tutorial-component.right:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  border-right: 0;
+}
+.tutorial-component.right:before {
+  right: -12px;
+  bottom: 35%;
+  /* If 1px darken stroke slightly */
+  border-left-color: white;
+  border-width: 12px;
+}
+.tutorial-component.right:after {
+  right: -11px;
+  bottom: 35%;
+  border-left-color: black;
+  border-width: 12px;
+}
+/*# sourceMappingURL=ember-tutorial-component.css.map */
