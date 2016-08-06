@@ -4,13 +4,13 @@ export default Ember.Controller.extend({
   config: {
     data: [{
       eleId: 'test1',
-      message: 'This is a demo message. May be step 1, please press next.'
-    },{
+      message: 'First help message goes here.'
+    }, {
       eleId: 'test2',
-      message: 'Message 2'
-    },{
+      message: 'This is the next step.'
+    }, {
       eleId: 'test3',
-      message: 'This press next mo message. May be step 1, pleas'
+      message: 'Final step, hit done to hide.'
     }]
   }
 });
