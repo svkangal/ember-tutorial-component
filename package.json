@@ -1,6 +1,6 @@
 {
   "name": "ember-tutorial-component",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -15,7 +15,7 @@
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Shrinivas Kangal",
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.2",
@@ -41,7 +41,10 @@
     "loader.js": "^4.0.1"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "tutorial-component",
+    "help-tooltips",
+    "new-feature-tooltips"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.6",
