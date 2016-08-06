@@ -1,7 +1,7 @@
 {
   "name": "ember-tutorial-component",
   "version": "0.0.2",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "Help tutorial using tooltips in UI, for example when any new feature is realsed and you want to show user how to use it.",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -11,7 +11,7 @@
     "start": "ember server",
     "test": "ember try:each"
   },
-  "repository": "",
+  "repository": "https://github.com/svkangal/ember-tutorial-component",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -44,7 +44,8 @@
     "ember-addon",
     "tutorial-component",
     "help-tooltips",
-    "new-feature-tooltips"
+    "new-feature-tooltips",
+    "ember-cli"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.6",
