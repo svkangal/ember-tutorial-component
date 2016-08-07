@@ -4,7 +4,8 @@
 [![Ember badge](https://embadge.io/v1/badge.svg?start=2.0.0)](https://embadge.io/v1/badge.svg?start=2.0.0)
 [![Build Status](https://travis-ci.org/svkangal/ember-tutorial-component.svg?branch=master)](https://travis-ci.org/svkangal/ember-tutorial-component) 
 [![Ember Observer Score](http://emberobserver.com/badges/ember-tutorial-component.svg)](http://emberobserver.com/addons/ember-tutorial-component)
-
+[![Code Climate](https://codeclimate.com/github/svkangal/ember-tutorial-component/badges/gpa.svg)](https://codeclimate.com/github/svkangal/ember-tutorial-component)
+[![Dependencies](https://david-dm.org/svkangal/ember-tutorial-component.svg)](https://david-dm.org/svkangal/ember-tutorial-component.svg)
 
 ## Index
 
