@@ -182,8 +182,8 @@ export default Ember.Component.extend({
       run.scheduleOnce('afterRender', this, function() {
         this.computeXCord();
         this.computeYCord();
+        window.scrollTo(this.get('xCoord'), this.get('yCoord'));
       });
-      window.scrollTo(this.get('xCoord'), this.get('yCoord'));
     },
     /**
      * @method  done
