@@ -16,6 +16,8 @@ addons:
     - google-chrome
     packages:
     - google-chrome-stable
+  code_climate:
+    repo_token: d37e28c225d9bd66a54d12cecac77eb2b80d863d716246197fc16720a91d65e2
 
 env:
   - EMBER_TRY_SCENARIO=default
