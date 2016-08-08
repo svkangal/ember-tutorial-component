@@ -37,6 +37,7 @@ before_install:
   - npm config set spin false
   - npm install -g bower
   - bower --version
+  - npm install -g codeclimate-test-reporter
 
 install:
   - npm install
@@ -44,3 +45,6 @@ install:
 
 script:
   - ember try:one $EMBER_TRY_SCENARIO test --skip-cleanup
+
+after_script:
+  - codeclimate-test-reporter < lcov.info
