@@ -6,6 +6,7 @@
 [![Ember Observer Score](http://emberobserver.com/badges/ember-tutorial-component.svg)](http://emberobserver.com/addons/ember-tutorial-component)
 [![Code Climate](https://codeclimate.com/github/svkangal/ember-tutorial-component/badges/gpa.svg)](https://codeclimate.com/github/svkangal/ember-tutorial-component)
 [![Dependencies](https://david-dm.org/svkangal/ember-tutorial-component.svg)](https://david-dm.org/svkangal/ember-tutorial-component.svg)
+[![Test Coverage](https://codeclimate.com/github/svkangal/ember-tutorial-component/badges/coverage.svg)](https://codeclimate.com/github/svkangal/ember-tutorial-component/coverage)
 
 ## Index
 
