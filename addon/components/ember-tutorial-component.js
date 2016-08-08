@@ -155,15 +155,25 @@ export default Ember.Component.extend({
   }),
 
   /**
-   * @method didInsertElement
+   * Initialize the tooltip
+   * @method initTootltip
    */
-  didInsertElement() {
-    //let that = this;
-    run.scheduleOnce('afterRender', this, function() {
-      this.set('currentConfig', this.get('config').data[0]);
-      this.set('currentConfigIndex', 0);
-      this.computeXCord();
-      this.computeYCord();
+  initTootltip() {
+    this.set('currentConfig', this.get('config').data[0]);
+    this.set('currentConfigIndex', 0);
+    this.computeXCord();
+    this.computeYCord();
+  },
+
+  /**
+   * Ember Hook used to fetch any new data needed
+   * for the component
+   * @method didReceiveAttrs
+   */
+  didReceiveAttrs() {
+    this.set('hideMessage', false);
+    run.schedule('afterRender', this, function() {
+      this.initTootltip();
     });
   },
 

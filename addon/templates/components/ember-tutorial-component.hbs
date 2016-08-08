@@ -1,12 +1,11 @@
-  {{#unless hideMessage}}
-    {{#ember-wormhole to="ember-tutorial-component-wormhole"}}
-      <div class='tutorial-component {{if isLeftPointer "left" "right"}}' style={{tooltipStyle}}>
-        <div>{{message}}</div>
-        {{#if isLastMessage}}
-          <button {{action 'done'}}>Done</button>
-        {{else}}
-          <button {{action 'next'}}>Next</button>
-        {{/if}}
-      </div>
-    {{/ember-wormhole}}
-  {{/unless}}
+{{#ember-wormhole to="ember-tutorial-component-wormhole"}}
+  <div class='tutorial-component {{if isLeftPointer "left" "right"}} {{if hideMessage "hide" "show"}}' style={{tooltipStyle}}>
+    <div>{{message}}</div>
+    {{#if isLastMessage}}
+      <button {{action 'done'}}>Done</button>
+    {{else}}
+      <button {{action 'next'}}>Next</button>
+    {{/if}}
+  </div>
+{{/ember-wormhole}}
+ 
