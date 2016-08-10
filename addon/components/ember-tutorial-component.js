@@ -135,7 +135,7 @@ export default Ember.Component.extend({
         let paddingOffset = 0;
         currentTooltipHeight = currentTooltipHeight + paddingOffset;
         if (height < currentTooltipHeight) {
-          this.set('yCoord', top + height/2 - currentTooltipHeight/2 +  window.pageYOffset);
+          this.set('yCoord', top + height/2 +  window.pageYOffset);
         } else {
           this.set('yCoord', top - currentTooltipHeight/2 +  window.pageYOffset);
         }
@@ -159,7 +159,6 @@ export default Ember.Component.extend({
    * @method initTootltip
    */
   initTootltip() {
-    this.set('currentConfig', this.get('config').data[0]);
     this.set('currentConfigIndex', 0);
     this.computeXCord();
     this.computeYCord();
@@ -172,6 +171,7 @@ export default Ember.Component.extend({
    */
   didReceiveAttrs() {
     this.set('hideMessage', false);
+    this.set('currentConfig', this.get('config').data[0]);
     run.schedule('afterRender', this, function() {
       this.initTootltip();
     });
