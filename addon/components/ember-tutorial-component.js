@@ -75,7 +75,11 @@ export default Ember.Component.extend({
    * @type {Boolean}
    */
   isLastMessage: computed('currentConfigIndex', function() {
-    return this.get('currentConfigIndex') === this.get('config').data.length - 1;
+    if (this.get('config')) {
+      return this.get('currentConfigIndex') === this.get('config').data.length - 1;
+    } else {
+      return false;
+    }
   }),
 
   /**
@@ -93,7 +97,7 @@ export default Ember.Component.extend({
    */
   computeXCord() {
     if (this.get('currentConfig')) {
-      let ele = Ember.$('#'+this.get('currentConfig').eleId);
+      let ele = Ember.$(this.get('currentConfig').ele);
       if (ele && ele[0]) {
         let { left, right } = ele[0].getBoundingClientRect();
         let { clientWidth: viewPortWidth } = document.documentElement;
@@ -128,7 +132,7 @@ export default Ember.Component.extend({
    */
   computeYCord() {
     if (this.get('currentConfig')) {
-      let ele = Ember.$('#'+this.get('currentConfig').eleId);
+      let ele = Ember.$(this.get('currentConfig').ele);
       if (ele && ele[0]) {
         let { top, height } = ele[0].getBoundingClientRect();
         let { height: currentTooltipHeight } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
@@ -170,11 +174,16 @@ export default Ember.Component.extend({
    * @method didReceiveAttrs
    */
   didReceiveAttrs() {
-    this.set('hideMessage', false);
-    this.set('currentConfig', this.get('config').data[0]);
-    run.schedule('afterRender', this, function() {
-      this.initTootltip();
-    });
+
+    if (this.get('config')) {
+      this.set('hideMessage', false);
+      this.set('currentConfig', this.get('config').data[0]);
+      run.schedule('afterRender', this, function() {
+        this.initTootltip();
+      });
+    } else {
+      this.set('hideMessage', true);
+    }
   },
 
   /**

@@ -56,13 +56,13 @@
 ```javascript
 { 
   data: [{
-    eleId: 'test1',
+    ele: '#test1',
     message: 'First help message goes here.'
   }, {
-    eleId: 'test2',
+    ele: '.test2',
     message: 'This is the next step.'
   }, {
-    eleId: 'test3',
+    ele: '.test3:nth-child(1)',
     message: 'Final step, hit done to hide.'
   }]
 }
