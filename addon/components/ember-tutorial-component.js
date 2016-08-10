@@ -135,7 +135,7 @@ export default Ember.Component.extend({
         let paddingOffset = 0;
         currentTooltipHeight = currentTooltipHeight + paddingOffset;
         if (height < currentTooltipHeight) {
-          this.set('yCoord', top + height/2 +  window.pageYOffset);
+          this.set('yCoord', top + height/2 - currentTooltipHeight/2 +  window.pageYOffset);
         } else {
           this.set('yCoord', top - currentTooltipHeight/2 +  window.pageYOffset);
         }
