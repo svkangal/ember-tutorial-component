@@ -72,7 +72,7 @@
 [https://www.npmjs.com/package/ember-tutorial-component](https://www.npmjs.com/package/ember-tutorial-component)
 
 ### Ongoing Features
-List all the current features in development.
+- Skip tutorial feature.
 
 ### Future Enhancements
 List all the future enhancements for this addon.
