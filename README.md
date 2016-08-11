@@ -73,7 +73,7 @@
 
 ### Ongoing Features
 - Skip tutorial feature.
-
+- Style Improvements
 ### Future Enhancements
 List all the future enhancements for this addon.
       
