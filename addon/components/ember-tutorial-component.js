@@ -209,6 +209,14 @@ export default Ember.Component.extend({
      */
     done() {
       this.set('hideMessage', true);
+    },
+
+    /**
+     * @method skip
+     */
+    skip() {
+      this.set('config', null);
+      this.set('hideMessage', true);
     }
   }
 
