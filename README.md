@@ -74,7 +74,9 @@
 ### Ongoing Features
 - Skip tutorial feature.
 - Style Improvements
+- Make features like skip/close optional and configurable. #9
+
 ### Future Enhancements
-List all the future enhancements for this addon.
+- Support HTML content in tooltips
       
 
