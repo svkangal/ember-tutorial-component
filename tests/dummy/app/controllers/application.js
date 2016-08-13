@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
       message: 'This is the next step. Show some helpful message here.'
     }, {
       ele: '#test3',
-      message: 'Final step, hit done to hide. Show some helpful message here.'
+      message: 'Final step, hit done to hide. Show some helpful message here. Final step, hit done to hide. Show some helpful message here.Final step, hit done to hide. Show some helpful message here.'
     }]
   },
 
