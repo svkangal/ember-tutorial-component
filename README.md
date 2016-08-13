@@ -72,9 +72,10 @@
 [https://www.npmjs.com/package/ember-tutorial-component](https://www.npmjs.com/package/ember-tutorial-component)
 
 ### Ongoing Features
-- Skip tutorial feature.
-- Style Improvements
-- Make features like skip/close optional and configurable. #9
+- Skip tutorial feature/ Close button.
+- Style Improvements and better layout for tooltips
+- Make features like skip/close optional and configurable.
+- 
 
 ### Future Enhancements
 - Support HTML content in tooltips
