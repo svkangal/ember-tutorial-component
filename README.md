@@ -25,7 +25,7 @@
    [Demo](https://svkangal.github.io/ember-tutorial-component/)
 
  - Demo Gif
-   ![ezgif com-video-to-gif 1](https://cloud.githubusercontent.com/assets/2807160/17454524/fe61d674-5b4d-11e6-8f3f-d5dfb9a2bb57.gif)
+   ![ezgif com-video-to-gif 1](https://cloud.githubusercontent.com/assets/2807160/17646596/c78394d8-6185-11e6-8ad5-e12733b6b709.gif)
 
 ## Installation
 
