@@ -19,35 +19,49 @@
     display: block;
   }
   > div {
-    margin-right: 50px;
+    margin-right: 4px;
   }
-  > .default-btn {
-    background-color: @button-background-color;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 13px;
-    margin: 4px 2px;
-    cursor: pointer;
-  }
-  > .done-btn, > .next-btn {
-    position: absolute;
-    right: 5px;
-    bottom: 4px;
-    cursor: pointer;
-    width: 50px;
-    height: 21px;
-    font-family: inherit;
-  }
-  > .skip-btn {
-    position: absolute;
-    right: 5px;
-    bottom: 30px;
-    cursor: pointer;
-    width: 50px;
-    height: 21px;
-    font-family: inherit;
+  .action-menu {
+    margin-top: 10px;
+    height: 24px;
+    border-top: 1px solid @button-background-color;
+    > .default-btn {
+      background-color: @button-background-color;
+      border: none;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      font-size: 13px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    > .done-btn, > .next-btn {
+      position: absolute;
+      right: 12px;
+      bottom: 4px;
+      cursor: pointer;
+      width: 50px;
+      height: 21px;
+      font-family: inherit;
+    }
+    > .skip-btn {
+      position: absolute;
+      right: 133px;
+      bottom: 4px;
+      cursor: pointer;
+      width: 50px;
+      height: 21px;
+      font-family: inherit;
+    }
+    > .previous-btn {
+      position: absolute;
+      left: 8px;
+      bottom: 4px;
+      cursor: pointer;
+      width: 58px;
+      height: 21px;
+      font-family: inherit;
+    }
   }
   &.left {
     &:before, &:after {

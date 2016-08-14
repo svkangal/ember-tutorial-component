@@ -83,6 +83,18 @@ export default Ember.Component.extend({
   }),
 
   /**
+   * @property isFirstMessage
+   * @type {Boolean}
+   */
+  isFirstMessage: computed('currentConfigIndex', function() {
+    if (this.get('config')) {
+      return this.get('currentConfigIndex') === 0;
+    } else {
+      return false;
+    }
+  }),
+
+  /**
    * @property message
    * @type {String}
    */
@@ -217,6 +229,17 @@ export default Ember.Component.extend({
     skip() {
       this.set('config', null);
       this.set('hideMessage', true);
+    },
+
+    previous() {
+      let nextConfigIndex = this.get('currentConfigIndex') - 1;
+      this.set('currentConfig', this.get('config').data[nextConfigIndex]);
+      this.set('currentConfigIndex', nextConfigIndex);
+      run.scheduleOnce('afterRender', this, function() {
+        this.computeXCord();
+        this.computeYCord();
+        window.scrollTo(this.get('xCoord'), this.get('yCoord'));
+      });
     }
   }
 
