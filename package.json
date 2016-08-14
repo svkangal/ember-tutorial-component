@@ -1,6 +1,6 @@
 {
   "name": "ember-tutorial-component",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Help tutorial using tooltips in UI, for example when any new feature is realsed and you want to show user how to use it.",
   "directories": {
     "doc": "doc",
