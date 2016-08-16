@@ -199,6 +199,19 @@ export default Ember.Component.extend({
   },
 
   /**
+   * @method  updateConfigDetails
+   */
+  updateConfigDetails(nextConfigIndex) {
+    this.set('currentConfig', this.get('config').data[nextConfigIndex]);
+    this.set('currentConfigIndex', nextConfigIndex);
+    run.scheduleOnce('afterRender', this, function() {
+      this.computeXCord();
+      this.computeYCord();
+      window.scrollTo(this.get('xCoord'), this.get('yCoord'));
+    });
+  },
+
+  /**
    * @property actions
    * @type {Object}
    */
@@ -208,13 +221,7 @@ export default Ember.Component.extend({
      */
     next() {
       let nextConfigIndex = this.get('currentConfigIndex') + 1;
-      this.set('currentConfig', this.get('config').data[nextConfigIndex]);
-      this.set('currentConfigIndex', nextConfigIndex);
-      run.scheduleOnce('afterRender', this, function() {
-        this.computeXCord();
-        this.computeYCord();
-        window.scrollTo(this.get('xCoord'), this.get('yCoord'));
-      });
+      this.updateConfigDetails(nextConfigIndex);
     },
     /**
      * @method  done
@@ -233,13 +240,7 @@ export default Ember.Component.extend({
 
     previous() {
       let nextConfigIndex = this.get('currentConfigIndex') - 1;
-      this.set('currentConfig', this.get('config').data[nextConfigIndex]);
-      this.set('currentConfigIndex', nextConfigIndex);
-      run.scheduleOnce('afterRender', this, function() {
-        this.computeXCord();
-        this.computeYCord();
-        window.scrollTo(this.get('xCoord'), this.get('yCoord'));
-      });
+      this.updateConfigDetails(nextConfigIndex);
     }
   }
 
