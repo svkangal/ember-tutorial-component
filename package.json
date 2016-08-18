@@ -48,7 +48,9 @@
     "tutorial-component",
     "help-tooltips",
     "new-feature-tooltips",
-    "ember-cli"
+    "ember-cli",
+    "oboarding",
+    "introduction"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.6",
