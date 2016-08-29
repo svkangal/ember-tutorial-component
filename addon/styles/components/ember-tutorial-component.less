@@ -122,4 +122,67 @@
       border-width: 12px;
     }
   }
+  &.up {
+     /* Required for Triangle */
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-color: transparent;
+      border-top: 0;
+    }
+
+    /* Stroke */
+    &:before {
+      left: 80%;
+      bottom: 100%;
+
+      /* If 1px darken stroke slightly */
+      border-bottom-color: white;
+      border-width: 12px;
+    }
+
+    /* Fill */
+    &:after {
+      left: 80%;
+      bottom: 100%;
+
+      border-bottom-color: @background-tooltip-color;
+      border-width: 12px;
+    }
+  }
+  &.down {
+     /* Required for Triangle */
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-color: transparent;
+      border-bottom: 0;
+    }
+
+    /* Stroke */
+    &:before {
+      left: 80%;
+      top: 100%;
+
+      /* If 1px darken stroke slightly */
+      border-top-color: white;
+      border-width: 12px;
+    }
+
+    /* Fill */
+    &:after {
+      left: 80%;
+      top: 100%;
+
+      border-top-color: @background-tooltip-color;
+      border-width: 12px;
+    }
+  }
+  
 }
