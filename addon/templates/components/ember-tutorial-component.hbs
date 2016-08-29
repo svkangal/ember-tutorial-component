@@ -1,5 +1,6 @@
 {{#ember-wormhole to="ember-tutorial-component-wormhole"}}
-  <div class='tutorial-component {{if isLeftPointer "left" "right"}} {{if hideMessage "hide" "show"}}' style={{tooltipStyle}}>
+<div class='tutorial-component-mask {{if hideMessage "hide" "show"}}'>
+  <div class='tutorial-component {{pointerDirection}} {{if hideMessage "hide" "show"}}' style={{tooltipStyle}}>
     <div>{{message}}</div>
     <div class="action-menu">
       {{#unless isFirstMessage}}
@@ -12,7 +13,6 @@
         <button {{action 'next'}}class="default-btn next-btn">Next</button>
       {{/if}}
     </div>
-
   </div>
+</div>
 {{/ember-wormhole}}
- 
