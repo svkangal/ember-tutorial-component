@@ -78,7 +78,7 @@
 - Skip tutorial feature/ Close button.
 - Style Improvements and better layout for tooltips
 - Make features like skip/close optional and configurable.
-- Suppport *up*, *left*, *down*, *left* arrow pointer to the tooltip
+- Suppport *up*, *right*, *down*, *left* arrow pointer to the tooltip
 - Mask the background if `mask` is configured to be `true`
 
 ### Future Enhancements
