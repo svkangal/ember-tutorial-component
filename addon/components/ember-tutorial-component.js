@@ -65,10 +65,11 @@ export default Ember.Component.extend({
   yCoord: 0,
 
   /**
-   * @property isLeftPointer
-   * @type {String}
+   * Whether to blurry the background and highlight tooltips or not
+   * @property isMask
+   * @type {Boolean}
    */
-  isLeftPointer: computed.equal('tooltipPointerSide', 'left'),
+  isMask: computed.bool('config.mask'),
 
   /**
    * @property pointerDirection
@@ -81,6 +82,12 @@ export default Ember.Component.extend({
       return this.get('isLeftPointer') ? 'left' : 'right';
     }
   }),
+
+  /**
+   * @property isLeftPointer
+   * @type {String}
+   */
+  isLeftPointer: computed.equal('tooltipPointerSide', 'left'),
 
   /**
    * @property isLastMessage
@@ -198,7 +205,7 @@ export default Ember.Component.extend({
     this._super(...arguments);
 
     Ember.$(window).on('resize.tutorial-component', function() {
-      console.log('resize position and trigger setPosition');
+      Ember.Logger.log('resize position and trigger setPosition');
       this.setPosition();
     }.bind(this));
   },
@@ -208,7 +215,7 @@ export default Ember.Component.extend({
    * @method didDestroyElement
    */
   didDestroyElement() {
-    console.log('resize position and trigger setPosition');
+    Ember.Logger.log('resize position and trigger setPosition');
     this.cancelAutoResize();
   },
 
@@ -234,7 +241,7 @@ export default Ember.Component.extend({
    * @method turn off resize listeners
    */
   cancelAutoResize() {
-    console.log('cancelAutoResize');
+    Ember.Logger.log('cancelAutoResize');
     Ember.$(window).off('resize.tutorial-component');
   },
 
@@ -268,13 +275,13 @@ export default Ember.Component.extend({
   },
 
   /**
-  * Either call
-  * 1) computeXYCord, or
-  * 2) computeXCord and computeYCord separately
-  * Based on the given pointer direction.
-  * If pointerDirection's given, call computerXYCord
-  * otherwise call computeXCord and computeYCord
-  */
+   * Either call
+   * 1) computeXYCord, or
+   * 2) computeXCord and computeYCord separately
+   * Based on the given pointer direction.
+   * If pointerDirection's given, call computerXYCord
+   * otherwise call computeXCord and computeYCord
+   */
   setPosition() {
     if (this.get('currentConfig').pointerDirection) {
       this.computeXYCord();
@@ -284,6 +291,11 @@ export default Ember.Component.extend({
     }
   },
 
+  /**
+   * Calculate the position of the tooltip
+   * {up, right, down, left} is used to show the arrow pointer's position
+   * @param  {[String]} tooltipElementSelector
+   */
   computeXYCord(tooltipElementSelector='.tutorial-component') {
     let $mainElement = Ember.$(this.get('currentConfig').ele);
     let $tooltipElement = Ember.$(tooltipElementSelector);
