@@ -54,7 +54,8 @@
 * `config`: Configuration for the component
 
 ```javascript
-{ 
+{
+  mask: false, // optional: masking the background if true, false otherwise
   data: [{
     ele: '#test1',
     message: 'First help message goes here.'
@@ -71,11 +72,14 @@
 ### npm Url
 [https://www.npmjs.com/package/ember-tutorial-component](https://www.npmjs.com/package/ember-tutorial-component)
 
+
+
 ### Ongoing Features
 - Skip tutorial feature/ Close button.
 - Style Improvements and better layout for tooltips
 - Make features like skip/close optional and configurable.
-- 
+- Suppport *up*, *left*, *down*, *left* arrow pointer to the tooltip
+- Mask the background if `mask` is configured to be `true`
 
 ### Future Enhancements
 - Support HTML content in tooltips
