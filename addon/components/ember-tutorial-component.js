@@ -65,6 +65,25 @@ export default Ember.Component.extend({
   yCoord: 0,
 
   /**
+   * Whether to blurry the background and highlight tooltips or not
+   * @property isMask
+   * @type {Boolean}
+   */
+  isMask: computed.bool('config.mask'),
+
+  /**
+   * @property pointerDirection
+   * @type {String}
+   */
+  pointerDirection: computed('currentConfig', 'isLeftPointer', function(){
+    if (this.get('currentConfig').pointerDirection) {
+      return this.get('currentConfig').pointerDirection;
+    } else {
+      return this.get('isLeftPointer') ? 'left' : 'right';
+    }
+  }),
+
+  /**
    * @property isLeftPointer
    * @type {String}
    */
@@ -167,17 +186,37 @@ export default Ember.Component.extend({
    * @return `left: Xpx; top: Ypx;`
    */
   tooltipStyle:  computed('xCoord', 'yCoord', function() {
-    return new SafeString(`left: ${this.get('xCoord') + 15}px; top: ${this.get('yCoord')}px; position: absolute;`);
+    return new SafeString(`left: ${this.get('xCoord')}px; top: ${this.get('yCoord')}px; position: absolute;`);
   }),
 
   /**
    * Initialize the tooltip
-   * @method initTootltip
+   * @method initTooltip
    */
-  initTootltip() {
+  initTooltip() {
     this.set('currentConfigIndex', 0);
-    this.computeXCord();
-    this.computeYCord();
+    this.setPosition();
+  },
+
+  /**
+   * Overrides the init function
+   */
+  init() {
+    this._super(...arguments);
+
+    Ember.$(window).on('resize.tutorial-component', function() {
+      Ember.Logger.log('resize position and trigger setPosition');
+      this.setPosition();
+    }.bind(this));
+  },
+
+  /**
+   * Ember Hook used to evit event listeners
+   * @method didDestroyElement
+   */
+  didDestroyElement() {
+    Ember.Logger.log('resize position and trigger setPosition');
+    this.cancelAutoResize();
   },
 
   /**
@@ -191,11 +230,19 @@ export default Ember.Component.extend({
       this.set('hideMessage', false);
       this.set('currentConfig', this.get('config').data[0]);
       run.schedule('afterRender', this, function() {
-        this.initTootltip();
+        this.initTooltip();
       });
     } else {
       this.set('hideMessage', true);
     }
+  },
+
+  /**
+   * @method turn off resize listeners
+   */
+  cancelAutoResize() {
+    Ember.Logger.log('cancelAutoResize');
+    Ember.$(window).off('resize.tutorial-component');
   },
 
   /**
@@ -205,10 +252,100 @@ export default Ember.Component.extend({
     this.set('currentConfig', this.get('config').data[nextConfigIndex]);
     this.set('currentConfigIndex', nextConfigIndex);
     run.scheduleOnce('afterRender', this, function() {
-      this.computeXCord();
-      this.computeYCord();
+      this.setPosition();
       window.scrollTo(this.get('xCoord'), this.get('yCoord'));
     });
+  },
+
+  /**
+   * Dynamically calculate the border width of given element
+   * @param  {String} element
+   * @param  {String} pseudoElement
+   * @return {Number}                 the border width in px
+   */
+  getBorderWidth(elementSelector='.tutorial-component', pseudoElementSelector=':before') {
+    const properties = ['border-top-width', 'border-left-width', 'border-right-width', 'border-bottom-width'];
+    const borderWidths = properties.map((property) => {
+        const borderWidth = window.getComputedStyle(document.querySelector('.tutorial-component'), pseudoElementSelector).getPropertyValue(property);
+        return parseInt(borderWidth);
+    });
+
+    const maxBorderWidth = Math.max.apply(null, borderWidths);
+    return maxBorderWidth;
+  },
+
+  /**
+   * Either call
+   * 1) computeXYCord, or
+   * 2) computeXCord and computeYCord separately
+   * Based on the given pointer direction.
+   * If pointerDirection's given, call computerXYCord
+   * otherwise call computeXCord and computeYCord
+   */
+  setPosition() {
+    if (this.get('currentConfig').pointerDirection) {
+      this.computeXYCord();
+    } else {
+      this.computeXCord();
+      this.computeYCord();
+    }
+  },
+
+  /**
+   * Calculate the position of the tooltip
+   * {up, right, down, left} is used to show the arrow pointer's position
+   * @param  {[String]} tooltipElementSelector
+   */
+  computeXYCord(tooltipElementSelector='.tutorial-component') {
+    let $mainElement = Ember.$(this.get('currentConfig').ele);
+    let $tooltipElement = Ember.$(tooltipElementSelector);
+    const borderWidth = this.getBorderWidth(tooltipElementSelector);
+
+    let {width: TW, height: TH} = $tooltipElement[0].getBoundingClientRect();
+    let {width: W, height: H} = $mainElement[0].getBoundingClientRect();
+    let {left: X, top: Y} = $mainElement.offset();
+
+    let x, y, widthSign, heightSign;
+    if (W >= TW) {
+      widthSign = 1;
+    } else {
+      widthSign = -1;
+    }
+
+    if (H >= TH) {
+      heightSign = 1;
+    } else {
+      heightSign = -1;
+    }
+
+    const position = this.get('pointerDirection').toLowerCase();
+    switch(position) {
+      case 'left':
+        x = X + W + borderWidth;
+        y = Y + (Math.abs((H-TH)/2.0) * heightSign);
+        break;
+      case 'right':
+        x = X - TW - borderWidth;
+        y = Y + (Math.abs((H-TH)/2.0) * heightSign);
+        break;
+      case 'up':
+        x = X + (Math.abs((W-TW)/2.0) * widthSign);
+        y = Y + H + borderWidth;
+        break;
+      case 'down':
+        x = X + (Math.abs((W-TW)/2.0) * widthSign);
+        y = Y - TH - borderWidth;
+        break;
+      default:
+        Ember.Logger.error('This condition should not reach');
+    }
+
+    this.set('xCoord', x);
+    this.set('yCoord', y);
+  },
+
+  didInsertElement() {
+    this.setPosition();
   },
 
   /**
