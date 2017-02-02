@@ -364,15 +364,19 @@ export default Ember.Component.extend({
      * @method  done
      */
     done() {
+      const afterDone = this.get('config.actions.afterDone');
+      if (typeof afterDone === 'function') {
+        afterDone();
+      }
       this.set('hideMessage', true);
+      this.set('config', null);
     },
 
     /**
      * @method skip
      */
     skip() {
-      this.set('config', null);
-      this.set('hideMessage', true);
+      this.send('done');
     },
 
     previous() {
