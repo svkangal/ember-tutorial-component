@@ -12,7 +12,7 @@ const config =  {
     message: 'Final step, hit done to hide. Show some helpful message here. Final step, hit done to hide. Show some helpful message here.Final step, hit done to hide. Show some helpful message here.'
   }, {
     ele: '#test4',
-    pointerDirection: 'up',
+    pointerDirection: 'top',
     message: 'show arrow pointer direction to the up.'
   }, {
     ele: '#test4',
@@ -20,7 +20,7 @@ const config =  {
     message: 'show arrow pointer direction to the right.'
   }, {
     ele: '#test4',
-    pointerDirection: 'down',
+    pointerDirection: 'bottom',
     message: 'show arrow pointer direction to the down.'
   }, {
     ele: '#test4',
@@ -41,17 +41,17 @@ export default Ember.Controller.extend({
   actions: {
     new() {
       this.set('config', {
-      /* jshint ignore:start */
+        /* jshint ignore:start */
         ...config,
-      /* jshint ignore:end */
+        /* jshint ignore:end */
         mask: false
       });
     },
     newWithMask() {
       this.set('config', {
-      /* jshint ignore:start */
+        /* jshint ignore:start */
         ...config,
-      /* jshint ignore:end */
+        /* jshint ignore:end */
         mask: true
       });
     }

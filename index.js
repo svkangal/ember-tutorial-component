@@ -4,11 +4,15 @@
 module.exports = {
   name: 'ember-tutorial-component',
 
-  contentFor: function(type, config) {
-    if (type === 'body-footer') {
-      return '<div id="ember-tutorial-component-wormhole"></div>';
-    }
+  included(app) {
+    this._super.included(app);
+    app.import(app.bowerDirectory + '/tether/dist/js/tether.js');
   },
+  // contentFor: function(type, config) {
+  //   if (type === 'body-footer') {
+  //     return '<div id="ember-tutorial-component-wormhole"></div>';
+  //   }
+  // },
   isDevelopingAddon: function() {
     return true;
   }
