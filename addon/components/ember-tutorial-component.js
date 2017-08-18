@@ -51,6 +51,12 @@ export default Ember.Component.extend({
    * @type {String}
    */
   pointerDirection: null,
+  isEnabledMask: computed('config.mask', 'currentConfig.mask', function() {
+    let globalMask = this.get('config.mask');
+    let localMask = this.get('currentConfig.mask');
+    return !isEmpty(localMask) ? localMask :
+      !isEmpty(globalMask) ? globalMask : false;
+  }),
 
   /**
    * @property defaultTetherSettings
@@ -60,7 +66,7 @@ export default Ember.Component.extend({
     let constrainedAreaContainer = this.get('constrainedAreaContainer');
     return {
       element: Ember.$('.tutorial-component')[0],
-      target: Ember.$(this.get('currentConfig.ele'))[0],
+      target: Ember.$(this.get('currentConfig.target'))[0],
       offset: this.get('positionSettings.offset'),
       attachment: this.get('positionSettings.attachment'),
       targetAttachment: this.get('positionSettings.targetAttachment'),
@@ -183,33 +189,36 @@ export default Ember.Component.extend({
    */
   didInsertElement() {
     if (this.get('config')) {
-      this.set('currentConfig', this.get('config').data[0]);
-      run.schedule('afterRender', this, function() {
-        this.initTooltip();
-        this.recalculatePosition();
-        this.scrollToElement();
-        this.set('hideMessage', false);
-      });
+      if (!isEmpty(this.get('config.expiration')) && this.hasVisited()) {
+        return;
+      }
+      this.updateConfigDetails(0);
+      this.set('hideMessage', false);
+      Ember.$('body').append('<div class="tutorial-component-overlay"></div>');
     } else {
       this.set('hideMessage', true);
     }
   },
 
-  /**
-   * Initialize the tooltip
-   * @method initTooltip
-   */
-  initTooltip() {
-    this.set('currentConfigIndex', 0);
-
-    let defaultTetherSettings = this.get('defaultTetherSettings');
-    let newTetherObject = new Tether(defaultTetherSettings);
-    run.scheduleOnce('afterRender', this, function() {
-      newTetherObject.position();
-    });
-    this.set('tetherObject', newTetherObject);
+  hasVisited() {
+    if (window.localStorage) {
+      let expirationKey = this.get('config.expiration.localStorageKey');
+      if (expirationKey && window.localStorage.getItem(expirationKey)) {
+        let date = new Date(JSON.parse(window.localStorage.getItem(expirationKey)));
+        return new Date() < date;
+      } else if (expirationKey && !window.localStorage.getItem(expirationKey)) {
+        let duration = this.get('config.expiration.duration');
+        duration = new Date((new Date()).getTime() + duration * 60 * 60 * 1000);
+        window.localStorage.setItem(expirationKey, JSON.stringify(duration));
+        return false;
+      } else {
+        return false;
+      }
+    } else {
+      Ember.Logger.error('No local storage found');
+      return false;
+    }
   },
-
 
   /**
    * Update internal properties to reflect new current configuration and re-position.
@@ -219,10 +228,19 @@ export default Ember.Component.extend({
     this.set('currentConfig', this.get('config').data[nextConfigIndex]);
     this.set('currentConfigIndex', nextConfigIndex);
     run.schedule('afterRender', this, function() {
+      this.setMaskOption();
       this.setPosition();
       this.recalculatePosition();
       this.scrollToElement();
     });
+  },
+
+  setMaskOption() {
+    if (this.get('isEnabledMask')) {
+      Ember.$('.tutorial-component-overlay').removeClass('hide');
+    } else {
+      Ember.$('.tutorial-component-overlay').addClass('hide');
+    }
   },
 
   /**
@@ -230,7 +248,17 @@ export default Ember.Component.extend({
    * @method setPosition
    */
   setPosition() {
-    this.get('tetherObject').setOptions(this.get('defaultTetherSettings'));
+    let tetherObject = this.get('tetherObject');
+    if (isEmpty(tetherObject)) {
+      let defaultTetherSettings = this.get('defaultTetherSettings');
+      let newTetherObject = new Tether(defaultTetherSettings);
+      run.scheduleOnce('afterRender', this, function() {
+        newTetherObject.position();
+      });
+      this.set('tetherObject', newTetherObject);
+    } else {
+      this.get('tetherObject').setOptions(this.get('defaultTetherSettings'));
+    }
   },
 
   /**
@@ -264,6 +292,19 @@ export default Ember.Component.extend({
     }, 1000);
   },
 
+  updateExpiration() {
+    let expiration = this.get('config.expiration');
+    if (expiration && window.localStorage) {
+      let expirationDate = new Date(JSON.parse(window.localStorage.getItem(expiration.localStorageKey)));
+      let localStorageKey = expiration.localStorageKey;
+      let duration = expiration.duration;
+      if (new Date() > expirationDate) {
+        let newExpirationDate = new Date((new Date()).getTime() + duration * 60 * 60 * 1000);
+        window.localStorage.setItem(localStorageKey, JSON.stringify(newExpirationDate));
+      }
+    }
+  },
+
   /**
    * Private method to iteratively calculate height of the current element
    * from the scrollableContainer
@@ -272,7 +313,7 @@ export default Ember.Component.extend({
   _getOffsetTop() {
     var targetSelector = this.get('scrollableContainer');
     var $targetParent = Ember.$(targetSelector);
-    var currSelector = this.get('currentConfig.ele');
+    var currSelector = this.get('currentConfig.target');
     var $curr = Ember.$(currSelector);
     var TOP = 0;
     var LEFT = 0;
@@ -348,7 +389,9 @@ export default Ember.Component.extend({
         afterDone();
       }
       this.set('hideMessage', true);
+      this.updateExpiration();
       this.set('config', null);
+      Ember.$('.tutorial-component-overlay').addClass('hide');
     },
 
     /**
