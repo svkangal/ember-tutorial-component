@@ -192,9 +192,8 @@ export default Ember.Component.extend({
       if (!isEmpty(this.get('config.expiration')) && this.hasVisited()) {
         return;
       }
-      this.updateConfigDetails(0);
       this.set('hideMessage', false);
-      Ember.$('body').append('<div class="tutorial-component-overlay"></div>');
+      this.updateConfigDetails(0);
     } else {
       this.set('hideMessage', true);
     }
@@ -317,7 +316,7 @@ export default Ember.Component.extend({
     var $curr = Ember.$(currSelector);
     var TOP = 0;
     var LEFT = 0;
-    while (!$curr.is($targetParent)) {
+    while (!$curr.is($targetParent) && !$curr.is(Ember.$('html'))) {
       TOP += $curr[0].offsetTop;
       LEFT += $curr.position().left;
       $curr = $curr.offsetParent();
