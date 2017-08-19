@@ -146,7 +146,7 @@ export default Ember.Component.extend({
    * @type {String}
    */
   scrollableContainer: computed('currentConfig.constraints', function() {
-    return this.getWithDefault('currentConfig.constraints.scrollableContainer', 'window');
+    return this.getWithDefault('currentConfig.constraints.scrollableContainer', null);
   }),
 
   /**
@@ -251,10 +251,10 @@ export default Ember.Component.extend({
     if (isEmpty(tetherObject)) {
       let defaultTetherSettings = this.get('defaultTetherSettings');
       let newTetherObject = new Tether(defaultTetherSettings);
-      run.scheduleOnce('afterRender', this, function() {
-        newTetherObject.position();
-      });
       this.set('tetherObject', newTetherObject);
+      run.schedule('afterRender', this, function() {
+        this.get('tetherObject').position();
+      });
     } else {
       this.get('tetherObject').setOptions(this.get('defaultTetherSettings'));
     }
