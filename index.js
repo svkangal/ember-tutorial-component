@@ -10,7 +10,7 @@ module.exports = {
   },
   contentFor: function(type, config) {
     if (type === 'body-footer') {
-      return '<div id="ember-tutorial-component-wormhole"></div><div class="tutorial-component-overlay"></div>';
+      return '<div id="ember-tutorial-component-wormhole"></div><div class="tutorial-component-overlay hide"></div>';
     }
   },
   isDevelopingAddon: function() {

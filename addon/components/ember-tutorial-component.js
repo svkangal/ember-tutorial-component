@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-tutorial-component';
 
-const { computed, run, isEmpty, observer } = Ember;
+const { computed, run, isEmpty, observer, on } = Ember;
 /**
  *
  * Usage:
@@ -27,11 +27,6 @@ export default Ember.Component.extend({
    */
   config: null,
   /**
-   * @object currentConfig
-   * @type {Object}
-   */
-  currentConfig: null,
-  /**
    * @property currentConfigIndex
    * @type {Number}
    */
@@ -47,15 +42,29 @@ export default Ember.Component.extend({
    */
   tetherObject: null,
   /**
+   * @object currentConfig
+   * @type {Object}
+   */
+  currentConfig: computed('currentConfigIndex', function() {
+    return (this.get('config.data') || [])[this.get('currentConfigIndex')];
+  }),
+  /**
    * @property pointerDirection
    * @type {String}
    */
-  pointerDirection: null,
-  isEnabledMask: computed('config.mask', 'currentConfig.mask', function() {
-    let globalMask = this.get('config.mask');
-    let localMask = this.get('currentConfig.mask');
+  pointerDirection: 'bottom',
+  isEnabledMask: computed('config.mask.enabled', 'currentConfig.mask.enabled', function() {
+    let globalMask = this.get('config.mask.enabled');
+    let localMask = this.get('currentConfig.mask.enabled');
     return !isEmpty(localMask) ? localMask :
       !isEmpty(globalMask) ? globalMask : false;
+  }),
+
+  zIndexMask: computed('config.mask.zIndex', 'currentConfig.mask.zIndex', function() {
+    let globalMask = this.get('config.mask.zIndex');
+    let localMask = this.get('currentConfig.mask.zIndex');
+    return !isEmpty(localMask) ? localMask :
+      !isEmpty(globalMask) ? globalMask : 1000;
   }),
 
   /**
@@ -109,10 +118,6 @@ export default Ember.Component.extend({
         targetAttachment = 'middle left';
         offset = '0 20px';
         break;
-      default:
-        attachment = 'bottom center';
-        targetAttachment = 'top center';
-        offset = '10px 0';
     }
     let configOffset = this.get('currentConfig.offset');
     offset = configOffset ? configOffset : offset;
@@ -122,14 +127,14 @@ export default Ember.Component.extend({
   /**
    * Observer on pointerDirection
    */
-  pointerDirectionObserver: observer('currentConfig.pointerDirection', function() {
+  pointerDirectionObserver: on('didReceiveAttrs', observer('currentConfig.pointerDirection', function() {
     let pointerDirection = this.get('currentConfig.pointerDirection');
     if (pointerDirection) {
       this.set('pointerDirection', pointerDirection);
     } else {
       this.set('pointerDirection', 'bottom');
     }
-  }),
+  })),
 
   /**
    * CSS Selector for specified constrainedAreaContainer in config
@@ -154,11 +159,7 @@ export default Ember.Component.extend({
    * @type {Boolean}
    */
   isLastMessage: computed('currentConfigIndex', function() {
-    if (this.get('config')) {
-      return this.get('currentConfigIndex') === this.get('config').data.length - 1;
-    } else {
-      return false;
-    }
+    return this.get('currentConfigIndex') === this.get('config.data.length') - 1;
   }),
 
   /**
@@ -166,11 +167,7 @@ export default Ember.Component.extend({
    * @type {Boolean}
    */
   isFirstMessage: computed('currentConfigIndex', function() {
-    if (this.get('config')) {
-      return this.get('currentConfigIndex') === 0;
-    } else {
-      return false;
-    }
+    return this.get('currentConfigIndex') === 0;
   }),
 
   /**
@@ -178,9 +175,7 @@ export default Ember.Component.extend({
    * @type {String}
    */
   message: computed('currentConfig', function() {
-    if (this.get('currentConfig')) {
-      return this.get('currentConfig').message;
-    }
+    return this.get('currentConfig.message');
   }),
 
   /**
@@ -193,7 +188,7 @@ export default Ember.Component.extend({
         return;
       }
       this.set('hideMessage', false);
-      this.updateConfigDetails(0);
+      this.updateConfigDetails();
     } else {
       this.set('hideMessage', true);
     }
@@ -223,9 +218,7 @@ export default Ember.Component.extend({
    * Update internal properties to reflect new current configuration and re-position.
    * @method  updateConfigDetails
    */
-  updateConfigDetails(nextConfigIndex) {
-    this.set('currentConfig', this.get('config').data[nextConfigIndex]);
-    this.set('currentConfigIndex', nextConfigIndex);
+  updateConfigDetails() {
     run.schedule('afterRender', this, function() {
       this.setMaskOption();
       this.setPosition();
@@ -236,7 +229,8 @@ export default Ember.Component.extend({
 
   setMaskOption() {
     if (this.get('isEnabledMask')) {
-      Ember.$('.tutorial-component-overlay').removeClass('hide');
+      let zIndex = this.get('zIndexMask');
+      Ember.$('.tutorial-component-overlay').removeClass('hide').css('z-index', zIndex);
     } else {
       Ember.$('.tutorial-component-overlay').addClass('hide');
     }
@@ -254,6 +248,7 @@ export default Ember.Component.extend({
       this.set('tetherObject', newTetherObject);
       run.schedule('afterRender', this, function() {
         this.get('tetherObject').position();
+
       });
     } else {
       this.get('tetherObject').setOptions(this.get('defaultTetherSettings'));
@@ -371,9 +366,11 @@ export default Ember.Component.extend({
      * @method next
      */
     next() {
-      let nextConfigIndex = this.get('currentConfigIndex') + 1;
+      console.log('next click');
+      debugger;
+      this.incrementProperty('currentConfigIndex');
       let nextHook = this.get('currentConfig.actions.next');
-      this.updateConfigDetails(nextConfigIndex);
+      this.updateConfigDetails();
       if (typeof nextHook === 'function') {
         nextHook();
       }
@@ -401,9 +398,9 @@ export default Ember.Component.extend({
     },
 
     previous() {
-      let nextConfigIndex = this.get('currentConfigIndex') - 1;
+      this.decrementProperty('currentConfigIndex');
       let previousHook = this.get('currentConfig.actions.previous');
-      this.updateConfigDetails(nextConfigIndex);
+      this.updateConfigDetails();
       if (typeof previousHook === 'function') {
         previousHook();
       }

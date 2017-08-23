@@ -1,6 +1,6 @@
-{{#ember-wormhole to="ember-tutorial-component-wormhole"}}
+{{!-- {{#ember-wormhole to="ember-tutorial-component-wormhole"}} --}}
   <div class='tutorial-component {{pointerDirection}} {{if hideMessage "hide"}}'>
-    <div>{{message}}</div>
+    <div class="message">{{message}}</div>
     <div class="action-menu">
       {{#unless isFirstMessage}}
         <button {{action 'previous'}} class="default-btn previous-btn">Previous</button>
@@ -9,8 +9,8 @@
       {{#if isLastMessage}}
         <button {{action 'done'}} class="default-btn done-btn">Done</button>
       {{else}}
-        <button {{action 'next'}} class="default-btn next-btn">Next</button>
+        <button onclick={{action 'next'}} class="default-btn next-btn">Next</button>
       {{/if}}
     </div>
   </div>
-{{/ember-wormhole}}
+{{!-- {{/ember-wormhole}} --}}
