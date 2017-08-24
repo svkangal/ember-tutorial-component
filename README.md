@@ -53,7 +53,8 @@ Ember Add-on for step-by-step guide and feature introduction, built on top of [T
 ```
 ## API
 
-* `config`: Configuration for the component
+### Config
+`config`: configuration for the component
 
 ```javascript
 {
@@ -93,18 +94,19 @@ Ember Add-on for step-by-step guide and feature introduction, built on top of [T
 #### Data
 
 `data` provides the configuration for each message that will be displayed.
+
 | Parameter    | Type        | Description       |
 | :----------- | :---------- | :---------------- |
 | `target`     | String ([CSS-Selector](https://www.w3schools.com/cssref/css_selectors.asp)) | CSS-Selector for the element that the message box will attach to. If there are more than one selected element from the selector, only the first one will be attached. |
 | `message`    | String      | Message that will be displayed on each step. |
-| `pointerDirection` | String | Direction of the pointer and orientation that the message will attach to the target. <br> **Supported Value:** `top`, `bottom`, `left` and `right` <br> **Default Value:** `bottom` |
+| `pointerDirection` | String | Direction of the pointer and orientation that the message will attach to the target. <br><br> **Supported Value:** `top`, `bottom`, `left` and `right` <br> **Default Value:** `bottom` |
 | `offset`     | String      | Offset value of the message box from target attachment. See [Tether.io's ](http://tether.io/) `offset` value for more details. |
 | `constraints.constrainedAreaContainer` | String ([CSS-Selector](https://www.w3schools.com/cssref/css_selectors.asp)) | Selector for the parent element that the message box will attach to. The message will disappear when it's out of the view of parent element. |
 | `constraints.scrollableContainer` | String ([CSS-Selector](https://www.w3schools.com/cssref/css_selectors.asp)) | Scrollable element that will automatically scroll the message box into view. Note that the element should be a positioned element for the scroll behavior to work correctly. |
 | `actions.previous` | Function   | Callback when user clicks previous. It can be used to handle interaction, e.g. click event, along with the message. |
 | `actions.next` | Function   | Callback when user clicks next. It can be used to handle interaction, e.g. click event, along with the message. |
 | `mask.enabled` | Boolean    | If `true`, shows the mask around the message box, and `false` otherwise. |
-| `mask.zIndex`  | Number     | `z-index` value for the mask. <br> **Default Value:** 1000 |
+| `mask.zIndex`  | Number     | `z-index` value for the mask. <br><br> **Default Value:** 1000 |
 
 #### Mask
 
@@ -114,7 +116,7 @@ Ember Add-on for step-by-step guide and feature introduction, built on top of [T
 | Parameter    | Type        | Description       |
 | :----------- | :---------- | :---------------- |
 | `enabled` | Boolean    | If `true`, shows the mask around the message box, and `false` otherwise. |
-| `zIndex`  | Number     | `z-index` value for the mask. <br> **Default Value:** 1000 |
+| `zIndex`  | Number     | `z-index` value for the mask. <br><br> **Default Value:** 1000 |
 
 #### Expiration
 
