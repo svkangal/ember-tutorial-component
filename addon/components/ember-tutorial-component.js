@@ -185,6 +185,7 @@ export default Ember.Component.extend({
   didInsertElement() {
     if (this.get('config')) {
       if (!isEmpty(this.get('config.expiration')) && this.hasVisited()) {
+        this.set('hideMessage', true);
         return;
       }
       this.set('hideMessage', false);
@@ -366,8 +367,7 @@ export default Ember.Component.extend({
      * @method next
      */
     next() {
-      console.log('next click');
-      debugger;
+      console.log('next');
       this.incrementProperty('currentConfigIndex');
       let nextHook = this.get('currentConfig.actions.next');
       this.updateConfigDetails();

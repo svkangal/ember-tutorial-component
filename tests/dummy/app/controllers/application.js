@@ -4,7 +4,8 @@ const config =  {
   data: [{
     target: '#test1',
     message: 'First help message goes here. Show some helpful message here.'
-  }, {
+  },
+  {
     target: '#test2',
     message: 'This is the next step. Show some helpful message here.'
   }, {
