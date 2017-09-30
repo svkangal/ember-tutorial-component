@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import layout from '../templates/components/ember-tutorial-component';
 
-const { computed, run, Handlebars: { SafeString } } = Ember;
+const { computed, run, isEmpty, observer, on } = Ember;
 /**
  *
  * Usage:
@@ -16,7 +16,6 @@ const { computed, run, Handlebars: { SafeString } } = Ember;
  * @extend Ember.Component
  */
 export default Ember.Component.extend({
-
   /**
    * @property layout
    * @type {Object}
@@ -28,11 +27,6 @@ export default Ember.Component.extend({
    */
   config: null,
   /**
-   * @object currentConfig
-   * @type {Object}
-   */
-  currentConfig: null,
-  /**
    * @property currentConfigIndex
    * @type {Number}
    */
@@ -41,64 +35,131 @@ export default Ember.Component.extend({
    * @property hideMessage
    * @type {Boolean}
    */
-  hideMessage: false,
+  hideMessage: true,
   /**
-   * @property tooltipPointerSide
-   * @type {String}
+   * @property tetherObject
+   * @type {Object}
    */
-  tooltipPointerSide: 'left',
-
+  tetherObject: null,
   /**
-   * Tooltip coord X
-   * @property xCoord
-   * @type {Number}
-   * @default 0
+   * @object currentConfig
+   * @type {Object}
    */
-  xCoord: 0,
-
-  /**
-   * Tooltip coord Y
-   * @property yCoord
-   * @type {Number}
-   * @default 0
-   */
-  yCoord: 0,
-
-  /**
-   * Whether to blurry the background and highlight tooltips or not
-   * @property isMask
-   * @type {Boolean}
-   */
-  isMask: computed.bool('config.mask'),
-
+  currentConfig: computed('currentConfigIndex', function() {
+    return (this.get('config.data') || [])[this.get('currentConfigIndex')];
+  }),
   /**
    * @property pointerDirection
    * @type {String}
    */
-  pointerDirection: computed('currentConfig', 'isLeftPointer', function(){
-    if (this.get('currentConfig').pointerDirection) {
-      return this.get('currentConfig').pointerDirection;
-    } else {
-      return this.get('isLeftPointer') ? 'left' : 'right';
-    }
+  pointerDirection: 'bottom',
+  isEnabledMask: computed('config.mask.enabled', 'currentConfig.mask.enabled', function() {
+    let globalMask = this.get('config.mask.enabled');
+    let localMask = this.get('currentConfig.mask.enabled');
+    return !isEmpty(localMask) ? localMask :
+      !isEmpty(globalMask) ? globalMask : false;
+  }),
+
+  zIndexMask: computed('config.mask.zIndex', 'currentConfig.mask.zIndex', function() {
+    let globalMask = this.get('config.mask.zIndex');
+    let localMask = this.get('currentConfig.mask.zIndex');
+    return !isEmpty(localMask) ? localMask :
+      !isEmpty(globalMask) ? globalMask : 1000;
   }),
 
   /**
-   * @property isLeftPointer
+   * @property defaultTetherSettings
+   * @type {Object}
+   */
+  defaultTetherSettings: computed('currentConfig', 'positionSettings', function() {
+    let constrainedAreaContainer = this.get('constrainedAreaContainer');
+    return {
+      element: Ember.$('.tutorial-component')[0],
+      target: Ember.$(this.get('currentConfig.target'))[0],
+      offset: this.get('positionSettings.offset'),
+      attachment: this.get('positionSettings.attachment'),
+      targetAttachment: this.get('positionSettings.targetAttachment'),
+      constraints: [
+        {
+          to: constrainedAreaContainer === 'window' ? 'window' : Ember.$(constrainedAreaContainer)[0],
+          // attachment: 'together'
+        }
+      ]
+    };
+  }),
+
+  /**
+   * @property positionSettings
+   * @type {Object}
+   */
+  positionSettings: computed('currentConfig', 'pointerDirection', function() {
+    let pointerDirection = this.get('pointerDirection');
+    let attachment;
+    let targetAttachment;
+    let offset;
+    switch (pointerDirection) {
+      case 'top':
+        attachment = 'top center';
+        targetAttachment = 'bottom center';
+        offset = '-10px 0';
+        break;
+      case 'bottom':
+        attachment = 'bottom center';
+        targetAttachment = 'top center';
+        offset = '10px 0';
+        break;
+      case 'left':
+        attachment = 'middle left';
+        targetAttachment = 'middle right';
+        offset = '0 -20px';
+        break;
+      case 'right':
+        attachment = 'middle right';
+        targetAttachment = 'middle left';
+        offset = '0 20px';
+        break;
+    }
+    let configOffset = this.get('currentConfig.offset');
+    offset = configOffset ? configOffset : offset;
+    return { attachment, targetAttachment, offset };
+  }),
+
+  /**
+   * Observer on pointerDirection
+   */
+  pointerDirectionObserver: on('didReceiveAttrs', observer('currentConfig.pointerDirection', function() {
+    let pointerDirection = this.get('currentConfig.pointerDirection');
+    if (pointerDirection) {
+      this.set('pointerDirection', pointerDirection);
+    } else {
+      this.set('pointerDirection', 'bottom');
+    }
+  })),
+
+  /**
+   * CSS Selector for specified constrainedAreaContainer in config
+   * @property constrainedAreaContainer
    * @type {String}
    */
-  isLeftPointer: computed.equal('tooltipPointerSide', 'left'),
+  constrainedAreaContainer: computed('currentConfig.constraints', function() {
+    return this.getWithDefault('currentConfig.constraints.constrainedAreaContainer', 'window');
+  }),
+
+  /**
+   * CSS Selector for specified scrollableContainer in config
+   * @property scrollableContainer
+   * @type {String}
+   */
+  scrollableContainer: computed('currentConfig.constraints', function() {
+    return this.getWithDefault('currentConfig.constraints.scrollableContainer', null);
+  }),
 
   /**
    * @property isLastMessage
    * @type {Boolean}
    */
   isLastMessage: computed('currentConfigIndex', function() {
-    if (this.get('config')) {
-      return this.get('currentConfigIndex') === this.get('config').data.length - 1;
-    } else {
-      return false;
-    }
+    return this.get('currentConfigIndex') === this.get('config.data.length') - 1;
   }),
 
   /**
@@ -106,11 +167,7 @@ export default Ember.Component.extend({
    * @type {Boolean}
    */
   isFirstMessage: computed('currentConfigIndex', function() {
-    if (this.get('config')) {
-      return this.get('currentConfigIndex') === 0;
-    } else {
-      return false;
-    }
+    return this.get('currentConfigIndex') === 0;
   }),
 
   /**
@@ -118,234 +175,187 @@ export default Ember.Component.extend({
    * @type {String}
    */
   message: computed('currentConfig', function() {
-    if (this.get('currentConfig')) {
-      return this.get('currentConfig').message;
-    }
+    return this.get('currentConfig.message');
   }),
 
   /**
-   * @method computeXCord
+   * Ember hook to initialize the tooltip for the first time
+   * @method didInsertElement
    */
-  computeXCord() {
-    if (this.get('currentConfig')) {
-      let ele = Ember.$(this.get('currentConfig').ele);
-      if (ele && ele[0]) {
-        let { left, right } = ele[0].getBoundingClientRect();
-        let { clientWidth: viewPortWidth } = document.documentElement;
-        let minTooltipWidth = 200;
-        let paddingAndPointerOffset = 32;
-        let { width: currentTooltipWidth } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
-        if (left < viewPortWidth/2  && right < viewPortWidth/2) { // content in the left half
-          this.set('tooltipPointerSide', 'left');
-          this.set('xCoord', right);
-        } else if (left > viewPortWidth/2  && right < viewPortWidth) { // content in the right half
-          this.set('tooltipPointerSide', 'right');
-          this.set('xCoord', left - currentTooltipWidth - paddingAndPointerOffset);
-        } else if (left > viewPortWidth/2  && right > viewPortWidth) { // content in the right half
-          this.set('tooltipPointerSide', 'right');
-          this.set('xCoord', left - currentTooltipWidth - paddingAndPointerOffset);
-        } else if (left < viewPortWidth/2 && right > viewPortWidth/2) { // content overlapping both hakd
-          this.set('tooltipPointerSide', 'left');
-          if (right + minTooltipWidth > viewPortWidth) {
-            this.set('xCoord', right - 40 - minTooltipWidth);
-          } else {
-            this.set('xCoord', right);
-          }
-        } else { // tooltip on the left side
-          Ember.Logger.error('This condition should not reach');
-        }
-      }
-    }
-  },
-
-  /**
-   * @method computeYCord
-   */
-  computeYCord() {
-    if (this.get('currentConfig')) {
-      let ele = Ember.$(this.get('currentConfig').ele);
-      if (ele && ele[0]) {
-        let { top, height } = ele[0].getBoundingClientRect();
-        let { height: currentTooltipHeight } = Ember.$('.tutorial-component')[0].getBoundingClientRect();
-        let paddingOffset = 0;
-        currentTooltipHeight = currentTooltipHeight + paddingOffset;
-        if (height < currentTooltipHeight) {
-          this.set('yCoord', top + height/2 - currentTooltipHeight/2 +  window.pageYOffset);
-        } else {
-          this.set('yCoord', top - currentTooltipHeight/2 +  window.pageYOffset);
-        }
-      }
-    }
-  },
-
-  /**
-   * Tooltip CSS inline style
-   * @param {Number} xCoord
-   * @param {Number} yCoord
-   * @method tooltipStyle
-   * @return `left: Xpx; top: Ypx;`
-   */
-  tooltipStyle:  computed('xCoord', 'yCoord', function() {
-    return new SafeString(`left: ${this.get('xCoord')}px; top: ${this.get('yCoord')}px; position: absolute;`);
-  }),
-
-  /**
-   * Initialize the tooltip
-   * @method initTooltip
-   */
-  initTooltip() {
-    this.set('currentConfigIndex', 0);
-    this.setPosition();
-  },
-
-  /**
-   * Overrides the init function
-   */
-  init() {
-    this._super(...arguments);
-
-    Ember.$(window).on('resize.tutorial-component', function() {
-      Ember.Logger.log('resize position and trigger setPosition');
-      this.setPosition();
-    }.bind(this));
-  },
-
-  /**
-   * Ember Hook used to evit event listeners
-   * @method didDestroyElement
-   */
-  didDestroyElement() {
-    Ember.Logger.log('resize position and trigger setPosition');
-    this.cancelAutoResize();
-  },
-
-  /**
-   * Ember Hook used to fetch any new data needed
-   * for the component
-   * @method didReceiveAttrs
-   */
-  didReceiveAttrs() {
-
+  didInsertElement() {
     if (this.get('config')) {
+      if (!isEmpty(this.get('config.expiration')) && this.hasVisited()) {
+        this.set('hideMessage', true);
+        return;
+      }
       this.set('hideMessage', false);
-      this.set('currentConfig', this.get('config').data[0]);
-      run.schedule('afterRender', this, function() {
-        this.initTooltip();
-      });
+      this.updateConfigDetails();
     } else {
       this.set('hideMessage', true);
     }
   },
 
-  /**
-   * @method turn off resize listeners
-   */
-  cancelAutoResize() {
-    Ember.Logger.log('cancelAutoResize');
-    Ember.$(window).off('resize.tutorial-component');
+  hasVisited() {
+    if (window.localStorage) {
+      let expirationKey = this.get('config.expiration.localStorageKey');
+      if (expirationKey && window.localStorage.getItem(expirationKey)) {
+        let date = new Date(JSON.parse(window.localStorage.getItem(expirationKey)));
+        return new Date() < date;
+      } else if (expirationKey && !window.localStorage.getItem(expirationKey)) {
+        let duration = this.get('config.expiration.duration');
+        duration = new Date((new Date()).getTime() + duration * 60 * 60 * 1000);
+        window.localStorage.setItem(expirationKey, JSON.stringify(duration));
+        return false;
+      } else {
+        return false;
+      }
+    } else {
+      Ember.Logger.error('No local storage found');
+      return false;
+    }
   },
 
   /**
+   * Update internal properties to reflect new current configuration and re-position.
    * @method  updateConfigDetails
    */
-  updateConfigDetails(nextConfigIndex) {
-    this.set('currentConfig', this.get('config').data[nextConfigIndex]);
-    this.set('currentConfigIndex', nextConfigIndex);
-    run.scheduleOnce('afterRender', this, function() {
+  updateConfigDetails() {
+    run.schedule('afterRender', this, function() {
+      this.setMaskOption();
       this.setPosition();
-      window.scrollTo(this.get('xCoord'), this.get('yCoord'));
+      this.recalculatePosition();
+      this.scrollToElement();
     });
   },
 
-  /**
-   * Dynamically calculate the border width of given element
-   * @param  {String} element
-   * @param  {String} pseudoElement
-   * @return {Number}                 the border width in px
-   */
-  getBorderWidth(elementSelector='.tutorial-component', pseudoElementSelector=':before') {
-    const properties = ['border-top-width', 'border-left-width', 'border-right-width', 'border-bottom-width'];
-    const borderWidths = properties.map((property) => {
-        const borderWidth = window.getComputedStyle(document.querySelector('.tutorial-component'), pseudoElementSelector).getPropertyValue(property);
-        return parseInt(borderWidth);
-    });
-
-    const maxBorderWidth = Math.max.apply(null, borderWidths);
-    return maxBorderWidth;
+  setMaskOption() {
+    if (this.get('isEnabledMask')) {
+      let zIndex = this.get('zIndexMask');
+      Ember.$('.tutorial-component-overlay').removeClass('hide').css('z-index', zIndex);
+    } else {
+      Ember.$('.tutorial-component-overlay').addClass('hide');
+    }
   },
 
   /**
-   * Either call
-   * 1) computeXYCord, or
-   * 2) computeXCord and computeYCord separately
-   * Based on the given pointer direction.
-   * If pointerDirection's given, call computerXYCord
-   * otherwise call computeXCord and computeYCord
+   * Set the position of the message box by overwriting Tether config
+   * @method setPosition
    */
   setPosition() {
-    if (this.get('currentConfig').pointerDirection) {
-      this.computeXYCord();
+    let tetherObject = this.get('tetherObject');
+    if (isEmpty(tetherObject)) {
+      let defaultTetherSettings = this.get('defaultTetherSettings');
+      let newTetherObject = new Tether(defaultTetherSettings);
+      this.set('tetherObject', newTetherObject);
+      run.schedule('afterRender', this, function() {
+        this.get('tetherObject').position();
+
+      });
     } else {
-      this.computeXCord();
-      this.computeYCord();
+      this.get('tetherObject').setOptions(this.get('defaultTetherSettings'));
     }
   },
 
   /**
-   * Calculate the position of the tooltip
-   * {up, right, down, left} is used to show the arrow pointer's position
-   * @param  {[String]} tooltipElementSelector
+   * Recalculate the position of the message box in case it overflows.
+   * Only triggered when pointerDirection is not specified.
+   * @method recalculatePosition
    */
-  computeXYCord(tooltipElementSelector='.tutorial-component') {
-    let $mainElement = Ember.$(this.get('currentConfig').ele);
-    let $tooltipElement = Ember.$(tooltipElementSelector);
-    const borderWidth = this.getBorderWidth(tooltipElementSelector);
-
-    let {width: TW, height: TH} = $tooltipElement[0].getBoundingClientRect();
-    let {width: W, height: H} = $mainElement[0].getBoundingClientRect();
-    let {left: X, top: Y} = $mainElement.offset();
-
-    let x, y, widthSign, heightSign;
-    if (W >= TW) {
-      widthSign = 1;
-    } else {
-      widthSign = -1;
+  recalculatePosition() {
+    if (isEmpty(this.get('currentConfig.pointerDirection'))) {
+      let className = Ember.$('.tutorial-component')[0].className;
+      let directionArray = ['left', 'right', 'top', 'bottom'];
+      directionArray.forEach(direction => {
+        if (className.indexOf(`tether-out-of-bounds-${direction}`) !== -1) {
+          this.set('pointerDirection', direction);
+          this.setPosition();
+          return;
+        }
+      });
     }
-
-    if (H >= TH) {
-      heightSign = 1;
-    } else {
-      heightSign = -1;
-    }
-
-    const position = this.get('pointerDirection').toLowerCase();
-    switch(position) {
-      case 'left':
-        x = X + W + borderWidth;
-        y = Y + (Math.abs((H-TH)/2.0) * heightSign);
-        break;
-      case 'right':
-        x = X - TW - borderWidth;
-        y = Y + (Math.abs((H-TH)/2.0) * heightSign);
-        break;
-      case 'up':
-        x = X + (Math.abs((W-TW)/2.0) * widthSign);
-        y = Y + H + borderWidth;
-        break;
-      case 'down':
-        x = X + (Math.abs((W-TW)/2.0) * widthSign);
-        y = Y - TH - borderWidth;
-        break;
-      default:
-        Ember.Logger.error('This condition should not reach');
-    }
-
-    this.set('xCoord', x);
-    this.set('yCoord', y);
   },
 
-  didInsertElement() {
-    this.setPosition();
+  /**
+   * Scroll the page to the position where the message box is
+   * @method scrollToElement
+   */
+  scrollToElement() {
+    let autoScrollOffset = this._getAutoScrollOffset();
+    let scrollableContainer = this.get('scrollableContainer');
+    Ember.$(scrollableContainer).animate({
+      scrollTop: this._getOffsetTop() - autoScrollOffset
+    }, 1000);
+  },
+
+  updateExpiration() {
+    let expiration = this.get('config.expiration');
+    if (expiration && window.localStorage) {
+      let expirationDate = new Date(JSON.parse(window.localStorage.getItem(expiration.localStorageKey)));
+      let localStorageKey = expiration.localStorageKey;
+      let duration = expiration.duration;
+      if (new Date() > expirationDate) {
+        let newExpirationDate = new Date((new Date()).getTime() + duration * 60 * 60 * 1000);
+        window.localStorage.setItem(localStorageKey, JSON.stringify(newExpirationDate));
+      }
+    }
+  },
+
+  /**
+   * Private method to iteratively calculate height of the current element
+   * from the scrollableContainer
+   * @method _getOffsetTop
+   */
+  _getOffsetTop() {
+    var targetSelector = this.get('scrollableContainer');
+    var $targetParent = Ember.$(targetSelector);
+    var currSelector = this.get('currentConfig.target');
+    var $curr = Ember.$(currSelector);
+    var TOP = 0;
+    var LEFT = 0;
+    while (!$curr.is($targetParent) && !$curr.is(Ember.$('html'))) {
+      TOP += $curr[0].offsetTop;
+      LEFT += $curr.position().left;
+      $curr = $curr.offsetParent();
+    }
+    return TOP;
+  },
+
+  /**
+   * Private method to get the default offset when scrolling an element into the page
+   * @method _getAutoScrollOffset
+   */
+  _getAutoScrollOffset() {
+    let autoScrollOffset = this.get('currentConfig.autoScrollOffset');
+    let offsetSettings = this.get('currentConfig.offset');
+    if (!isEmpty(autoScrollOffset)) {
+      return autoScrollOffset;
+    }
+    autoScrollOffset = 0;
+    if (!isEmpty(offsetSettings)) {
+      autoScrollOffset = this._getVerticalOffset(offsetSettings);
+    }
+    let messageBoxHeight = Ember.$('.tutorial-component').outerHeight();
+    let padding = 20;
+    switch (this.get('pointerDirection')) {
+      case 'bottom':
+        autoScrollOffset += messageBoxHeight + padding;
+        break;
+      case 'top':
+        break;
+      case 'left':
+      case 'right':
+        autoScrollOffset += messageBoxHeight / 2.0 + padding;
+        break;
+    }
+    return autoScrollOffset + padding;
+  },
+
+  /**
+   * Private method to parse the value of vertical offset
+   * @param {String} offset Tether offset property
+   */
+  _getVerticalOffset(offset) {
+    return +offset.split(' ')[0].slice(0, -2);
   },
 
   /**
@@ -357,9 +367,15 @@ export default Ember.Component.extend({
      * @method next
      */
     next() {
-      let nextConfigIndex = this.get('currentConfigIndex') + 1;
-      this.updateConfigDetails(nextConfigIndex);
+      console.log('next');
+      this.incrementProperty('currentConfigIndex');
+      let nextHook = this.get('currentConfig.actions.next');
+      this.updateConfigDetails();
+      if (typeof nextHook === 'function') {
+        nextHook();
+      }
     },
+
     /**
      * @method  done
      */
@@ -369,7 +385,9 @@ export default Ember.Component.extend({
         afterDone();
       }
       this.set('hideMessage', true);
+      this.updateExpiration();
       this.set('config', null);
+      Ember.$('.tutorial-component-overlay').addClass('hide');
     },
 
     /**
@@ -380,9 +398,12 @@ export default Ember.Component.extend({
     },
 
     previous() {
-      let nextConfigIndex = this.get('currentConfigIndex') - 1;
-      this.updateConfigDetails(nextConfigIndex);
+      this.decrementProperty('currentConfigIndex');
+      let previousHook = this.get('currentConfig.actions.previous');
+      this.updateConfigDetails();
+      if (typeof previousHook === 'function') {
+        previousHook();
+      }
     }
   }
-
 });
